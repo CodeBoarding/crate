@@ -37,8 +37,17 @@ jobs:
         with:
           distribution: temurin
           java-version: '27'
+      # Test only: hands the Action the static analysis of 31875da from run 42617225914 (depth 2),
+      # so a deeper review spends its time on the diagram instead of a second 2-hour static pass.
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: codeboarding-base-f788d14d7822cbed-31875da1c7019548960dac8fe857a5a66b855c19
+          run-id: 42617225914
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/cb-static-seed
       - uses: CodeBoarding/CodeBoarding-action@test/crate-java27
         with:
+          depth_cap: '4'
           # A CodeBoarding license: the free hosted tier's weekly quota ran out on the JabRef forks.
           llm: license
           license_key: ${{ secrets.CODEBOARDING_LICENSE }}
